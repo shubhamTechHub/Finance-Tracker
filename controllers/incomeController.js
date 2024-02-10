@@ -28,6 +28,7 @@ const createIncome = asyncHandler(async (req, res) => {
     category,
     description,
     date,
+    user_id: req.user.id,
   });
 
   res.status(201).json(newIncome);
