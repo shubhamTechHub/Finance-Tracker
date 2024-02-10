@@ -3,16 +3,16 @@ const Income = require("../models/incomeModel");
 
 // @desc Get All Incomes
 // @route GET /api/finance-tracker/income
-// @access public
+// @access private
 
 const getIncomes = asyncHandler(async (req, res) => {
-  const incomes = await Income.find({});
+  const incomes = await Income.find({ user_id: req.user.id });
   res.status(200).json(incomes);
 });
 
 // @desc Create new income
 // @route POST /api/finance-tracker/income
-// @access public
+// @access private
 
 const createIncome = asyncHandler(async (req, res) => {
   const { title, amount, category, description, date } = req.body;
@@ -35,7 +35,7 @@ const createIncome = asyncHandler(async (req, res) => {
 
 // @desc Delete Income
 // @route DELETE /api/finance-tracker/income/:id
-// @access public
+// @access private
 
 const deleteIncome = asyncHandler(async (req, res) => {
   const { id } = req.params;
@@ -44,6 +44,13 @@ const deleteIncome = asyncHandler(async (req, res) => {
   if (!income) {
     res.status(404);
     throw new Error("Income not found");
+  }
+
+  if (income.user_id.toString() !== req.user.id) {
+    res.status(403);
+    throw new Error(
+      "User don't have permission to delete other user transactions"
+    );
   }
 
   const deletedIncome = await Income.findByIdAndDelete(id);
