@@ -1,6 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const connectDb = require("./config/dbConnection");
+const errorHandler = require("./middleware/errorHandler");
 require("dotenv").config();
 
 const app = express();
@@ -9,10 +10,8 @@ const PORT = process.env.PORT || 5000;
 // middlewares
 app.use(express.json());
 app.use(cors());
-
-app.get("/", (req, res) => {
-  res.send("Hello World");
-});
+app.use("/api/finance-tracker", require("./routes/transactionsRoutes"));
+app.use(errorHandler);
 
 const server = () => {
   connectDb();
