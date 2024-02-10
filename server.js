@@ -1,5 +1,6 @@
 const express = require("express");
 const cors = require("cors");
+const connectDb = require("./config/dbConnection");
 require("dotenv").config();
 
 const app = express();
@@ -14,6 +15,7 @@ app.get("/", (req, res) => {
 });
 
 const server = () => {
+  connectDb();
   app.listen(PORT, () => {
     console.log(`Server is running at http://localhost:${PORT}`);
   });
